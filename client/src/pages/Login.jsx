@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
 import axios from "axios"
 import useAccountStore from "../zustand/account.store"
+import { useCookies } from "react-cookie"
 
 export default function Login() {
   // Zustand
@@ -18,6 +19,8 @@ export default function Login() {
 
   const navigate = useNavigate()
 
+  const [cookies, setCookie, removeCookie] = useCookies(["token"])
+
   const handleInputChange = (event) => {
     const { name, value } = event.target
     setFormData((prevData) => ({
@@ -29,6 +32,14 @@ export default function Login() {
   const loginUser = async (e) => {
     e.preventDefault()
     const { email, password } = formData
+
+    // Define your cookie options
+    const cookieOptions = {
+      path: "/", // Path for the cookie
+      secure: true, // Use HTTPS-only cookie
+      sameSite: "none", // Same-site attribute (strict, lax, none)
+    }
+
     try {
       const { data } = await axios.post("/api/auth/login", {
         email,
@@ -39,6 +50,7 @@ export default function Login() {
         zustandStoreAccount(data.user)
         toast.success(data.message)
         setFormData(initialFormData) // reset input fields
+        setCookie("token", data.token, cookieOptions)
         navigate("/")
       } else {
         toast.error(data.message)
