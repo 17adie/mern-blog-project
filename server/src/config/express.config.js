@@ -22,6 +22,7 @@ App.use(
 
 // Serve static files from the "uploads" folder
 App.use("/uploads", express.static("uploads"))
+// App.use('/uploads', express.static(__dirname + '/uploads'));
 
 // Parse incoming request with json payload
 App.use(express.json())

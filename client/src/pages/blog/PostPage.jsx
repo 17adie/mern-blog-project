@@ -12,7 +12,7 @@ export default function PostPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/post/user-post")
+        const response = await axios.get("/api/post/user-posts")
         console.log(response.data)
         setUserPosts(response.data.data)
       } catch (error) {
@@ -21,7 +21,6 @@ export default function PostPage() {
         setLoading(false) // Set loading to false after data fetching (whether it succeeds or fails)
       }
     }
-    setLoading(true)
     fetchData()
   }, [])
 

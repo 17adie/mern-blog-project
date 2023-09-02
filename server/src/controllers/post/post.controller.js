@@ -49,10 +49,10 @@ const createPost = async (req, res) => {
   }
 }
 
-const getPost = async (req, res) => {
+const getUserPost = async (req, res) => {
   try {
     const id = req.id
-    const userPost = await Post.find({ author: id }).populate("author", ["first_name", "last_name"]).sort({ date_created: -1 })
+    const userPost = await Post.find({ author: id }).populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }) // Exclude _id, include first_name and last_name
 
     return res.json({
       status: true,
@@ -63,4 +63,28 @@ const getPost = async (req, res) => {
   }
 }
 
-export { createPost, getPost }
+const getAllPosts = async (req, res) => {
+  try {
+    const userPost = await Post.find().populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }) // Exclude _id, include first_name and last_name
+
+    return res.json({
+      status: true,
+      data: userPost,
+    })
+  } catch (error) {
+    console.log({ error })
+  }
+}
+
+const getPost = async (req, res) => {
+  try {
+    const { id } = req.params
+    const postDoc = await Post.findById(id).populate("author", { first_name: 1, last_name: 1, _id: 0 }) // Exclude _id, include first_name and last_name
+    return res.json({
+      status: true,
+      data: postDoc,
+    })
+  } catch (error) {}
+}
+
+export { createPost, getUserPost, getAllPosts, getPost }

@@ -56,7 +56,7 @@ export default function CreatePostPage() {
     formDataToSend.append("content", content)
 
     try {
-      const { data } = await axios.post("/api/post/create-post", formDataToSend)
+      const { data } = await axios.post("/api/post/posts", formDataToSend)
       console.log({ data })
       if (data.status) {
         toast.success(data.message)

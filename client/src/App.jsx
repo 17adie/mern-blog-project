@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast"
 import PrivateRoutes from "./utils/PrivateRoutes"
 import PublicRoutes from "./utils/PublicRoutes"
 import CreatePostPage from "./pages/blog/CreatePostPage"
+import ViewPostPage from "./pages/blog/ViewPostPage"
 
 // server url
 axios.defaults.baseURL = "http://localhost:8000"
@@ -32,6 +33,7 @@ function App() {
           <Route path="/create-post" element={<CreatePostPage />} exact />
           <Route path="/post" element={<PostPage />} exact />
           <Route path="/edit" element={<EditPage />} exact />
+          <Route path="/post/:id" element={<ViewPostPage />} />
         </Route>
       </Routes>
     </>
