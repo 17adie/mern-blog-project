@@ -20,7 +20,7 @@ PostRouter.get("/posts", getAllPosts)
 PostRouter.get("/user-posts", authMiddleware, getUserPost)
 
 // Create a new post
-PostRouter.post("/posts", uploadMiddleware.single("file"), attachFileToLocals, createPost)
+PostRouter.post("/posts", authMiddleware, uploadMiddleware.single("file"), attachFileToLocals, createPost)
 
 // Get a post by ID
 PostRouter.get("/:id", authMiddleware, getPost)
