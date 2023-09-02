@@ -105,7 +105,7 @@ const loginUser = async (req, res) => {
             .cookie("token", token, {
               // httpOnly: true, // Prevent JavaScript access. set to true to not be able to access or get the cookie values
               secure: true, // Only send over HTTPS
-              sameSite: "lax", // Protect against CSRF attacks. Note: don't use "strict" if you using cross-site meaning different website. server website != client website
+              sameSite: "none", // Protect against CSRF attacks. Note: don't use "strict" if you using cross-site meaning different website. server website != client website
             })
             .json({ status: true, message: "Login success!", user: user })
         }
