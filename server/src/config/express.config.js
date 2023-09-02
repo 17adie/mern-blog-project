@@ -12,13 +12,34 @@ import PostRouter from "../routes/postRoutes.js"
 
 const App = express()
 
-// Use cors
-App.use(
-  cors({
-    credentials: true,
-    origin: process.env.CLIENT_HOST,
-  })
-)
+// Use cors local env
+// App.use(
+//   cors({
+//     credentials: true,
+//     origin: process.env.CLIENT_HOST,
+//   })
+// )
+
+// Allow requests from specific origins
+const allowedOrigins = [
+  process.env.CLIENT_HOST,
+  process.env.LIVE_CLIENT_HOST,
+  // Add other origins as needed
+]
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error("Not allowed by CORS"))
+    }
+  },
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+}
+
+// Enable CORS for all routes or specify it for a specific route
+App.use(cors(corsOptions))
 
 // Serve static files from the "uploads" folder
 App.use("/uploads", express.static("uploads"))
