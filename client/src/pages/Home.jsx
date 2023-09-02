@@ -7,20 +7,32 @@ import Loader from "../components/Loader"
 export default function Home() {
   const [loading, setLoading] = useState(true) // Set loading to true initially
   const [userPosts, setUserPosts] = useState([])
+  const [page, setPage] = useState(1) // Add page state
+  const [limit] = useState(5) // Adjust this to your desired limit
+  const [hasMoreData, setHasMoreData] = useState(true) // Track if there's more data
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/post/posts")
-        setUserPosts(response.data.data)
+        const response = await axios.get(`/api/post/posts?page=${page}&limit=${limit}`)
+        // console.log(response.data.data)
+        if (response.data.data.length === 0) {
+          setHasMoreData(false) // No more data to load
+        } else {
+          setUserPosts([...userPosts, ...response.data.data])
+        }
       } catch (error) {
         console.log("Error:", error)
       } finally {
-        setLoading(false) // Set loading to false after data fetching (whether it succeeds or fails)
+        setLoading(false)
       }
     }
     fetchData()
-  }, [])
+  }, [page, limit])
+
+  const handleLoadMore = () => {
+    setPage(page + 1)
+  }
 
   return (
     <section className="max-w-7xl mx-auto relative bg-gray-200 pt-2">
@@ -37,6 +49,7 @@ export default function Home() {
                   {userPosts.map((post, i) => (
                     <PostCard key={post._id} {...post} />
                   ))}
+                  {hasMoreData && <button onClick={handleLoadMore}>Load More</button>}
                 </>
               )}
             </>

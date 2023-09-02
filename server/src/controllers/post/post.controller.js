@@ -64,9 +64,18 @@ const getUserPost = async (req, res) => {
 }
 
 const getAllPosts = async (req, res) => {
-  try {
-    const userPost = await Post.find().populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }) // Exclude _id, include first_name and last_name
+  const { page, limit, search } = req.query
+  const skip = (page - 1) * limit
+  const query = {}
 
+  if (search) {
+    // Customize the query to search for posts based on your schema
+    query.title = { $regex: new RegExp(search, "i") } // Case-insensitive title search
+  }
+
+  try {
+    // const userPost = await Post.find().populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }) // Exclude _id, include first_name and last_name
+    const userPost = await Post.find(query).populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }).skip(skip).limit(parseInt(limit))
     return res.json({
       status: true,
       data: userPost,

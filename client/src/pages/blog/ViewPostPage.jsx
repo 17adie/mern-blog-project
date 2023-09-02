@@ -19,7 +19,7 @@ export default function ViewPostPage() {
     const fetchData = async () => {
       try {
         const response = await axios.get(`/api/post/${id}`)
-        console.log(response.data)
+        // console.log(response.data)
         setPostInfo(response.data.data)
       } catch (error) {
         console.log("Error:", error)

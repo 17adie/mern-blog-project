@@ -13,7 +13,7 @@ export default function PostPage() {
     const fetchData = async () => {
       try {
         const response = await axios.get("/api/post/user-posts")
-        console.log(response.data)
+        // console.log(response.data)
         setUserPosts(response.data.data)
       } catch (error) {
         console.log("Error:", error)
@@ -28,10 +28,10 @@ export default function PostPage() {
     <section className="max-w-7xl mx-auto relative bg-gray-200 pt-2">
       <div className="mx-auto w-5/6 bg-gray-100 p-5 rounded-lg pb-9 mb-5 md:pb-10 lg:pb-7">
         <div className="w-full">
-          <div className="mx-auto flex justify-between">
-            <h1 className="text-2xl font-semibold leading-7 pl-3 text-primary relative">
+          <div className="mx-auto flex justify-between ">
+            <h1 className="text-xl font-semibold pl-3 text-primary relative pt-1">
               Blog Post
-              <span className="absolute left-0 top-1/2 w-1 h-6 bg-primary-color2 transform -translate-y-1/2"></span>
+              <span className="absolute left-0 top-1/2 w-1 h-6 bg-primary-color2 transform -translate-y-3"></span>
             </h1>
             <div>
               <Link to="/create-post" className="flex justify-center px-3 py-1.5 text-sm font-semibold leading-6 text-white bg-primary-color1 rounded-md shadow-sm hover:bg-primary-color2">
