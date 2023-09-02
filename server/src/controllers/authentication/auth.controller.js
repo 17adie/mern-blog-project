@@ -103,7 +103,7 @@ const loginUser = async (req, res) => {
           res
             // set cookies to client side to manipulate cookies in a more user-friendly way
             .cookie("token", token, {
-              httpOnly: true, // Prevent JavaScript access. set to true to not be able to access or get the cookie values
+              // httpOnly: true, // Prevent JavaScript access. set to true to not be able to access or get the cookie values
               secure: true, // Only send over HTTPS
               sameSite: "none", // Protect against CSRF attacks. Note: don't use "strict" if you using cross-site meaning different website. server website != client website
             })
