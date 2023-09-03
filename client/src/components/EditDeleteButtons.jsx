@@ -5,7 +5,9 @@ export default function EditDeleteButtons({ id, handleDeletePost }) {
 
   return (
     <div className="flex gap-2 justify-end">
-      <Link className="px-3 py-1.5 text-sm font-semibold leading-6 text-white bg-green-500 rounded-md shadow-sm hover:bg-green-400">Edit</Link>
+      <Link to={`/post/edit/${id}`} className="px-3 py-1.5 text-sm font-semibold leading-6 text-white bg-green-500 rounded-md shadow-sm hover:bg-green-400">
+        Edit
+      </Link>
       <button onClick={() => handleDeletePost(id)} className="px-3 py-1.5 text-sm font-semibold leading-6 text-white bg-red-500 rounded-md shadow-sm hover:bg-red-400">
         Remove
       </button>

@@ -23,7 +23,7 @@ PostRouter.get("/user-posts", authMiddleware, getUserPost)
 PostRouter.post("/posts", authMiddleware, uploadMiddleware.single("file"), attachFileToLocals, createPost)
 
 // Get a post by ID
-PostRouter.get("/:id", authMiddleware, getPost)
+PostRouter.get("/:id", getPost)
 
 // delete post
 PostRouter.delete("/:id", authMiddleware, deletePost)

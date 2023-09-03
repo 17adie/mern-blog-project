@@ -10,6 +10,10 @@ body,
 #root {
   @apply bg-gray-200;
 }
+
+.active {
+  @apply text-primary-color1;
+}
 /* .app { */
 /* height: 100%; */
 /* width: 100%; */

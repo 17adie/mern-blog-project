@@ -59,7 +59,7 @@ export default function PostPage() {
 
     confirmAlert({
       title: "Confirm to submit",
-      message: "Are you sure to do this.",
+      message: "Are you sure to remove this?",
       buttons: [
         {
           label: "Yes",

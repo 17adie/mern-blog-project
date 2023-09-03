@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { SquaresPlusIcon, Bars3Icon } from "@heroicons/react/24/outline"
 import { useCookies } from "react-cookie"
 import useAccountStore from "../zustand/account.store"
@@ -18,15 +18,26 @@ export default function Navbar() {
   const LoginRegisterUrl = () => {
     return (
       <>
-        <Link to="/login">Login</Link>
-        <Link to="/register">Register</Link>
+        {/* Use NavLink in react-router-dom to be able to set the link name to active phase */}
+        <NavLink to="/login">Login</NavLink>
+        <NavLink to="/register">Register</NavLink>
       </>
     )
   }
 
   const logoutUser = () => {
+    /*
+       To remove entire row of cookie. 
+       Note: Use {path: "/"} to properly clear the cookie because sometimes its not working 
+       e.q. if you go to http://localhost:5173/post/<enter post id> then delete some characters
+       to the id then enter. If you try to access the logout button on navbar, it will not work. But,
+       other than that all is working like the zustand (clear function)
+       src: https://stackoverflow.com/questions/54861709/cookies-removeabc-not-working-in-reactjs | https://github.com/bendotcodes/cookies/issues/16
+    */
+    removeCookie("token", { path: "/" })
+    // zustand
     zustandStoreAccount(undefined)
-    removeCookie("token") // to remove entire row of cookie
+    // navigate login when logout
     navigate("/login")
   }
 
@@ -36,7 +47,7 @@ export default function Navbar() {
     //   } else {
     //     setIsLogged(false)
     //   }
-
+    console.log(cookies.token)
     // simplified version of the above condition code
     setIsLogged(cookies.token !== undefined)
   }, [cookies.token])
@@ -49,17 +60,17 @@ export default function Navbar() {
           <div className="flex items-center gap-16 my-12">
             {/* logo */}
             <div>
-              <Link to="/" className="flex gap-1 font-bold text-gray-700 items-center">
+              <NavLink to="/" className="flex gap-1 font-bold text-gray-700 items-center">
                 <SquaresPlusIcon className="h-6 w-6 text-primary-color1" />
                 <span className="text-primary-color1">Blog Post</span>
-              </Link>
+              </NavLink>
             </div>
             {/* primary */}
             <div className="hidden lg:flex gap-8">
-              <Link to="/">Home</Link>
+              <NavLink to="/">Home</NavLink>
               {isLogged ? (
                 <>
-                  <Link to="/post">Post</Link>
+                  <NavLink to="/post">Post</NavLink>
                 </>
               ) : (
                 ""
@@ -97,10 +108,10 @@ export default function Navbar() {
       <div className={`fixed z-40 w-full bg-primary-color4 overflow-hidden flex flex-col lg:hidden gap-12 origin-top duration-700 ${!toggleMenu ? "h-0" : "h-full"}`}>
         <div className="px-8">
           <div className="flex flex-col gap-5 font-bold tracking-wider mt-3 text-primary-color1" onClick={() => setToggleMenu(!toggleMenu)}>
-            <Link to="/">Home</Link>
+            <NavLink to="/">Home</NavLink>
             {isLogged ? (
               <>
-                <Link to="/post">Post</Link>
+                <NavLink to="/post">Post</NavLink>
                 <a onClick={logoutUser}>Logout</a>
               </>
             ) : (

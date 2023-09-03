@@ -23,6 +23,8 @@ function App() {
       <Toaster position="bottom-right" toastOptions={{ duration: 3000 }} />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/post/:id" element={<ViewPostPage />} />
+
         {/* Public Routes. Redirect to home page when login */}
         <Route element={<PublicRoutes />}>
           <Route path="/login" element={<Login />} />
@@ -32,8 +34,7 @@ function App() {
         <Route element={<PrivateRoutes />}>
           <Route path="/create-post" element={<CreatePostPage />} exact />
           <Route path="/post" element={<PostPage />} exact />
-          <Route path="/edit" element={<EditPage />} exact />
-          <Route path="/post/:id" element={<ViewPostPage />} />
+          <Route path="/post/edit/:id" element={<EditPage />} />
         </Route>
       </Routes>
     </>

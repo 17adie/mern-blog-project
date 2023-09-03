@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import axios from "axios"
 import { format } from "date-fns"
 import Loader from "../../components/Loader"
@@ -7,6 +7,7 @@ import Loader from "../../components/Loader"
 export default function ViewPostPage() {
   const [loading, setLoading] = useState(true) // Set loading to true initially
   const [postInfo, setPostInfo] = useState([])
+  const [pageNotFound, setPageNotFound] = useState(false)
 
   // get the id from the url :id
   const { id } = useParams()
@@ -19,8 +20,12 @@ export default function ViewPostPage() {
     const fetchData = async () => {
       try {
         const response = await axios.get(`/api/post/${id}`)
-        // console.log(response.data)
-        setPostInfo(response.data.data)
+
+        if (response.data.status) {
+          setPostInfo(response.data.data)
+        } else {
+          setPageNotFound(true)
+        }
       } catch (error) {
         console.log("Error:", error)
       } finally {
@@ -35,6 +40,13 @@ export default function ViewPostPage() {
       <div className="mx-auto w-5/6 bg-gray-100 p-5 rounded-lg pb-9 mb-5 md:pb-10 lg:pb-7">
         {loading ? (
           <Loader />
+        ) : pageNotFound ? (
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-primary">No data found</h1>
+            <Link to="/">
+              <p className="mt-2 underline">back to main page</p>
+            </Link>
+          </div>
         ) : (
           <div>
             <h1 className="text-xl font-bold md:text-3xl">{postInfo.title}</h1>
