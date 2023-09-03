@@ -1,7 +1,7 @@
 import express from "express"
 import uploadMiddleware from "../middleware/upload.middleware.js"
 import authMiddleware from "../middleware/auth.middleware.js"
-import { createPost, getUserPost, getAllPosts, getPost } from "../controllers/post/post.controller.js"
+import { createPost, getUserPost, getAllPosts, getPost, deletePost } from "../controllers/post/post.controller.js"
 
 const PostRouter = express.Router()
 
@@ -16,7 +16,7 @@ const attachFileToLocals = (req, res, next) => {
 // Get all post
 PostRouter.get("/posts", getAllPosts)
 
-// Get posts by a specific user
+// Get all posts by a specific user
 PostRouter.get("/user-posts", authMiddleware, getUserPost)
 
 // Create a new post
@@ -24,5 +24,8 @@ PostRouter.post("/posts", authMiddleware, uploadMiddleware.single("file"), attac
 
 // Get a post by ID
 PostRouter.get("/:id", authMiddleware, getPost)
+
+// delete post
+PostRouter.delete("/:id", authMiddleware, deletePost)
 
 export default PostRouter

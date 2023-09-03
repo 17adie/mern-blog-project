@@ -4,17 +4,28 @@ import axios from "axios"
 import PostCard from "../../components/PostCard"
 import NoPost from "../../components/NoPost"
 import Loader from "../../components/Loader"
+import { toast } from "react-hot-toast"
+import { confirmAlert } from "react-confirm-alert" // Import
+import "react-confirm-alert/src/react-confirm-alert.css" // Import css
 
 export default function PostPage() {
   const [loading, setLoading] = useState(true) // Set loading to true initially
   const [userPosts, setUserPosts] = useState([])
+  const [postOwner] = useState(true)
+  const [page, setPage] = useState(1) // Add page state
+  const [limit] = useState(5) // Adjust this to your desired limit
+  const [hasMoreData, setHasMoreData] = useState(true) // Track if there's more data
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/post/user-posts")
+        const response = await axios.get(`/api/post/user-posts?page=${page}&limit=${limit}`)
         // console.log(response.data)
-        setUserPosts(response.data.data)
+        if (response.data.data.length === 0) {
+          setHasMoreData(false) // No more data to load
+        } else {
+          setUserPosts([...userPosts, ...response.data.data])
+        }
       } catch (error) {
         console.log("Error:", error)
       } finally {
@@ -22,7 +33,48 @@ export default function PostPage() {
       }
     }
     fetchData()
-  }, [])
+  }, [page, limit])
+
+  const handleLoadMore = () => {
+    setPage(page + 1)
+  }
+
+  const handleDeletePost = async (postID) => {
+    const delePost = async () => {
+      try {
+        const { data } = await axios.delete(`/api/post/${postID}`)
+        console.log(data)
+
+        if (data.status) {
+          toast.success(data.message)
+        } else {
+          toast.error(data.message)
+        }
+
+        setUserPosts(userPosts.filter((post) => post._id !== postID))
+      } catch (error) {
+        console.log({ error })
+      }
+    }
+
+    confirmAlert({
+      title: "Confirm to submit",
+      message: "Are you sure to do this.",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => delePost(),
+        },
+        {
+          label: "No",
+          onClick: () => {
+            console.log("No")
+            return
+          },
+        },
+      ],
+    })
+  }
 
   return (
     <section className="max-w-7xl mx-auto relative bg-gray-200 pt-2">
@@ -40,7 +92,6 @@ export default function PostPage() {
             </div>
           </div>
         </div>
-
         <div className="container mx-auto">
           {loading ? (
             <Loader />
@@ -51,8 +102,9 @@ export default function PostPage() {
               ) : (
                 <>
                   {userPosts.map((post, i) => (
-                    <PostCard key={post._id} {...post} />
+                    <PostCard key={post._id} {...post} handleDeletePost={handleDeletePost} postOwner={postOwner} />
                   ))}
+                  {hasMoreData && <button onClick={handleLoadMore}>Load More</button>}
                 </>
               )}
             </>

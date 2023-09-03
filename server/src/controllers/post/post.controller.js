@@ -1,5 +1,6 @@
 import Post from "../../mongodb/models/Post.js"
 
+// Create a new post
 const createPost = async (req, res) => {
   try {
     const { title, summary, content } = req.body
@@ -49,10 +50,14 @@ const createPost = async (req, res) => {
   }
 }
 
+// Get all posts by a specific user
 const getUserPost = async (req, res) => {
+  const { page, limit } = req.query
+  const skip = (page - 1) * limit
+  const id = req.id
+
   try {
-    const id = req.id
-    const userPost = await Post.find({ author: id }).populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }) // Exclude _id, include first_name and last_name
+    const userPost = await Post.find({ author: id }).populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }).skip(skip).limit(parseInt(limit)) // Exclude _id, include first_name and last_name
 
     return res.json({
       status: true,
@@ -60,9 +65,11 @@ const getUserPost = async (req, res) => {
     })
   } catch (error) {
     console.log({ error })
+    return res.json({ status: false, route: "get user post", error: error })
   }
 }
 
+// Get all post
 const getAllPosts = async (req, res) => {
   const { page, limit } = req.query
   const skip = (page - 1) * limit
@@ -76,9 +83,11 @@ const getAllPosts = async (req, res) => {
     })
   } catch (error) {
     console.log({ error })
+    return res.json({ status: false, route: "get all post", error: error })
   }
 }
 
+// Get a post by ID
 const getPost = async (req, res) => {
   try {
     const { id } = req.params
@@ -87,7 +96,27 @@ const getPost = async (req, res) => {
       status: true,
       data: postDoc,
     })
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+    return res.json({ status: false, route: "get post", error: error })
+  }
 }
 
-export { createPost, getUserPost, getAllPosts, getPost }
+// Delete a post
+const deletePost = async (req, res) => {
+  try {
+    const id = req.params.id
+    const deletedPost = await Post.findByIdAndDelete(id)
+
+    if (!deletedPost) {
+      return res.json({ status: false, message: "Item not found" })
+    }
+
+    return res.json({ status: true, data: deletedPost, message: "Post deleted successfully" })
+  } catch (error) {
+    console.log(error)
+    return res.json({ status: false, route: "delete post", error: error })
+  }
+}
+
+export { createPost, getUserPost, getAllPosts, getPost, deletePost }
