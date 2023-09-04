@@ -1,11 +1,11 @@
 import express from "express"
 import uploadMiddleware from "../middleware/upload.middleware.js"
 import authMiddleware from "../middleware/auth.middleware.js"
-import { createPost, getUserPost, getAllPosts, getPost, deletePost } from "../controllers/post/post.controller.js"
+import { createPost, getUserPost, getAllPosts, getPost, deletePost, updatePost } from "../controllers/post/post.controller.js"
 
 const PostRouter = express.Router()
 
-// Middleware to attach req.file to req.locals
+// Middleware to attach req.file to req.locals. To be able to get the filename (ref. create post and update post)
 const attachFileToLocals = (req, res, next) => {
   req.locals = { ...req.locals, file: req.file }
   next()
@@ -24,6 +24,9 @@ PostRouter.post("/posts", authMiddleware, uploadMiddleware.single("file"), attac
 
 // Get a post by ID
 PostRouter.get("/:id", getPost)
+
+// update post
+PostRouter.put("/posts/:id", authMiddleware, uploadMiddleware.single("file"), attachFileToLocals, updatePost)
 
 // delete post
 PostRouter.delete("/:id", authMiddleware, deletePost)

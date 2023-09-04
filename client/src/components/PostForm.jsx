@@ -2,7 +2,7 @@ import { PhotoIcon } from "@heroicons/react/24/outline"
 import TextEditor from "../components/TextEditor"
 import { toast } from "react-hot-toast"
 
-export default function PostForm({ onSubmit, formRef, formData, handleInputChange, setFormData }) {
+export default function PostForm({ onSubmit, formRef, formData, handleInputChange, setFormData, type }) {
   // #File input region
   const setSelectedFile = (file) => {
     setFormData((prevData) => ({
@@ -150,7 +150,7 @@ export default function PostForm({ onSubmit, formRef, formData, handleInputChang
               {/* Cover photo section */}
               <div className="col-span-full">
                 <label htmlFor="file" className="block text-sm font-medium leading-6 text-primary">
-                  Cover photo <span className="text-red-500">*</span>
+                  Cover photo {type == "Update" ? <div className="text-xs text-gray-600 font-light">Note: Please choose a file to update the cover. If you don't want to update it, just leave it blank.</div> : <span className="text-red-500s">*</span>}
                 </label>
                 <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-3" onDragOver={handleDragOver} onDrop={handleDrop}>
                   <div className="text-center">

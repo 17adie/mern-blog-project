@@ -51,7 +51,7 @@ export default function Login() {
         toast.success(data.message)
         setFormData(initialFormData) // reset input fields
         setCookie("token", data.token, cookieOptions)
-        navigate("/")
+        navigate("/post")
       } else {
         toast.error(data.message)
       }

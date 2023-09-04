@@ -50,10 +50,10 @@ export default function CreatePostPage() {
 
     // Create a FormData object. Use this approach to be able to save the file data
     const formDataToSend = new FormData()
-    formDataToSend.append("title", title)
-    formDataToSend.append("summary", summary)
-    formDataToSend.append("file", file) // Append the file to the FormData
-    formDataToSend.append("content", content)
+    formDataToSend.set("title", title)
+    formDataToSend.set("summary", summary)
+    formDataToSend.set("file", file) // Append the file to the FormData
+    formDataToSend.set("content", content)
 
     try {
       const { data } = await axios.post("/api/post/posts", formDataToSend)

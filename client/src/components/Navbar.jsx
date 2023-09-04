@@ -47,7 +47,6 @@ export default function Navbar() {
     //   } else {
     //     setIsLogged(false)
     //   }
-    console.log(cookies.token)
     // simplified version of the above condition code
     setIsLogged(cookies.token !== undefined)
   }, [cookies.token])

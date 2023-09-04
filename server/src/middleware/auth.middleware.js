@@ -20,7 +20,8 @@ const AuthMiddleware = async (req, res, next) => {
     // Run the next function
     next()
   } catch (err) {
-    res.status(401).json({ status: false, data: null, error: err }) 
+    console.log(err)
+    res.status(401).json({ status: false, data: null, error: err, message: "token error" })
   }
 }
 

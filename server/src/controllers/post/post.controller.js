@@ -119,4 +119,69 @@ const deletePost = async (req, res) => {
   }
 }
 
-export { createPost, getUserPost, getAllPosts, getPost, deletePost }
+const updatePost = async (req, res) => {
+  try {
+    const { title, summary, content } = req.body
+    const { id } = req.params // post id
+    const { fileName } = req.locals // get saved filename from /upload
+    const userID = req.id // get user id for updating condition
+
+    const postDoc = await Post.findById(id) // get the author id
+
+    // userID from decrypted token and postDoc.author.toString() is from find
+    // return false if not equal
+    if (userID !== postDoc.author.toString()) {
+      return res.json({ status: false, message: "You're not authorize to modify this post." })
+    }
+
+    // Get the current time
+    const currentTime = new Date()
+
+    /**
+     * Construct the update object using the $set operator
+     * Note: When you use $set in an update operation, you are telling MongoDB to update
+     * only the specified fields while leaving all other fields in the document unchanged.
+     * It's a way to perform a partial update without affecting the entire document.
+     *
+     * When you don't use $set in an update operation, MongoDB will replace the entire
+     * document with the new data provided. This means that any fields not included in
+     * the update object will be removed from the document.
+     *
+     * But this works only using MongoDB driver. Using mongoose you using it or not is okay.
+     * check documentation : https://mongoosejs.com/docs/api/model.html#Model.findByIdAndUpdate()
+     * gpt explanation: https://chat.openai.com/c/d5dd46a6-057f-469e-b9a3-20da531c4cb8
+     */
+    const updateObject = {
+      // $set: {
+      title: title,
+      summary: summary,
+      content: content,
+      date_updated: currentTime,
+      // },
+    }
+
+    // Check if fileName is provided and not null
+    if (fileName !== undefined) {
+      // If fileName is provided, update the file field
+      // updateObject.$set.cover_path = fileName // using set
+      updateObject.cover_path = fileName
+    }
+
+    // Use findByIdAndUpdate to update the document
+    const updatedDocument = await Post.findByIdAndUpdate(
+      id,
+      updateObject,
+      { new: true } // Return the updated document
+    )
+
+    if (!updatedDocument) {
+      return res.json({ status: false, message: "Failed update. Document not found" })
+    }
+
+    return res.json({ status: true, data: updatedDocument, message: "Post updated successfully!" })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export { createPost, getUserPost, getAllPosts, getPost, deletePost, updatePost }

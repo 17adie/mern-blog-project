@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom"
 import axios from "axios"
 import { format } from "date-fns"
 import Loader from "../../components/Loader"
+import NoDataFound from "../../components/NoDataFound"
 
 export default function ViewPostPage() {
   const [loading, setLoading] = useState(true) // Set loading to true initially
@@ -41,12 +42,7 @@ export default function ViewPostPage() {
         {loading ? (
           <Loader />
         ) : pageNotFound ? (
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-primary">No data found</h1>
-            <Link to="/">
-              <p className="mt-2 underline">back to main page</p>
-            </Link>
-          </div>
+          <NoDataFound />
         ) : (
           <div>
             <h1 className="text-xl font-bold md:text-3xl">{postInfo.title}</h1>
