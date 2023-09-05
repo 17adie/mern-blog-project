@@ -11,13 +11,13 @@ export default function PostCard({ _id, title, cover_path, date_created, author,
   return (
     <div className="lg:flex bg-white shadow-sm rounded-lg overflow-hidden my-10 justify-between">
       <div className="lg:w-1/3">
-        <Link to={`/post/${_id}`}>
+        <Link to={`/post/${_id}`} state={{ postOwner }}>
           <img className="object-cover h-48 w-96 rounded p-3 hover:scale-110 ease-in duration-200" src={coverPath} alt="cover photo" />
         </Link>
       </div>
       <div className="flex flex-col p-4 lg:w-2/3 justify-between">
         <div>
-          <Link to={`/post/${_id}`} className="text-2xl font-semibold text-primary hover:underline">
+          <Link to={`/post/${_id}`} state={{ postOwner }} className="text-2xl font-semibold text-primary hover:underline">
             {title}
           </Link>
           <div className="mb-4 flex flex-col items-baseline gap-1 sm:flex-row">

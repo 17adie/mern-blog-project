@@ -11,7 +11,7 @@ import "react-confirm-alert/src/react-confirm-alert.css" // Import css
 export default function PostPage() {
   const [loading, setLoading] = useState(true) // Set loading to true initially
   const [userPosts, setUserPosts] = useState([])
-  const [postOwner] = useState(true)
+  const [postOwner, setPostOwner] = useState("")
   const [page, setPage] = useState(1) // Add page state
   const [limit] = useState(5) // Adjust this to your desired limit
   const [hasMoreData, setHasMoreData] = useState(true) // Track if there's more data
@@ -20,11 +20,12 @@ export default function PostPage() {
     const fetchData = async () => {
       try {
         const response = await axios.get(`/api/post/user-posts?page=${page}&limit=${limit}`)
-        // console.log(response.data)
+        console.log(response.data)
         if (response.data.data.length === 0) {
           setHasMoreData(false) // No more data to load
         } else {
           setUserPosts([...userPosts, ...response.data.data])
+          setPostOwner(response.data.postOwner)
         }
       } catch (error) {
         console.log("Error:", error)

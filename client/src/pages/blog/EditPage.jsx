@@ -91,7 +91,10 @@ export default function EditPage() {
       if (data.status) {
         toast.success(data.message)
         setLoading(false)
-        navigate(`/post/${id}`)
+
+        // source: https://chat.openai.com/c/6adf1254-92c1-465b-be4a-e27a3c103e96
+        const state = { postOwner: true }
+        navigate(`/post/${id}`, { state })
       } else {
         toast.error(data.message)
         setLoading(false)

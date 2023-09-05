@@ -52,16 +52,17 @@ const createPost = async (req, res) => {
 
 // Get all posts by a specific user
 const getUserPost = async (req, res) => {
-  const { page, limit } = req.query
-  const skip = (page - 1) * limit
-  const id = req.id
-
   try {
+    const { page, limit } = req.query
+    const skip = (page - 1) * limit
+    const id = req.id
+
     const userPost = await Post.find({ author: id }).populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }).skip(skip).limit(parseInt(limit)) // Exclude _id, include first_name and last_name
 
     return res.json({
       status: true,
       data: userPost,
+      postOwner: true,
     })
   } catch (error) {
     console.log({ error })
@@ -71,10 +72,10 @@ const getUserPost = async (req, res) => {
 
 // Get all post
 const getAllPosts = async (req, res) => {
-  const { page, limit } = req.query
-  const skip = (page - 1) * limit
-
   try {
+    const { page, limit } = req.query
+    const skip = (page - 1) * limit
+
     // const userPost = await Post.find().populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }) // Exclude _id, include first_name and last_name
     const userPost = await Post.find().populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }).skip(skip).limit(parseInt(limit))
     return res.json({
