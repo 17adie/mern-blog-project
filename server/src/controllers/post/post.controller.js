@@ -120,6 +120,7 @@ const deletePost = async (req, res) => {
   }
 }
 
+// Update a post
 const updatePost = async (req, res) => {
   try {
     const { title, summary, content } = req.body

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate, useLocation } from "react-router-dom"
+import { useCookies } from "react-cookie"
 import axios from "axios"
 import { format } from "date-fns"
 import Loader from "../../components/Loader"
@@ -14,6 +15,7 @@ export default function ViewPostPage() {
   const [postInfo, setPostInfo] = useState([])
   const [pageNotFound, setPageNotFound] = useState(false)
   const [postOwner, setPostOwner] = useState(null)
+  const [cookies, setCookies, removeCookie] = useCookies(["token"])
 
   // get the id from the url :id
   const { id } = useParams()
@@ -44,7 +46,11 @@ export default function ViewPostPage() {
           setPostOwner(postOwner)
         }
 
-        const response = await axios.get(`/api/post/${id}`)
+        const response = await axios.get(`/api/post/${id}`, {
+          headers: {
+            Authorization: `Bearer ${cookies.token}`,
+          },
+        })
 
         if (response.data.status) {
           setPostInfo(response.data.data)

@@ -4,10 +4,14 @@ import jwt from "jsonwebtoken"
 const AuthMiddleware = async (req, res, next) => {
   try {
     const secretKey = process.env.JWT_SECRET
-    const { token } = req.cookies
+    // old
+    // const { token } = req.cookies
+    // if (!token) throw new Error()
 
-    if (!token) throw new Error()
-
+    // to be able to retrieve the token on production
+    const authHeader = req.headers.authorization
+    if (!authHeader || !authHeader.startsWith("Bearer")) throw new Error()
+    const token = authHeader.split(" ")[1]
     // Decode token
     const decoded = jwt.verify(token, secretKey)
 

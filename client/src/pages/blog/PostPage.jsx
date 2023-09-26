@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
+import { useCookies } from "react-cookie"
 import axios from "axios"
 import PostCard from "../../components/PostCard"
 import NoPost from "../../components/NoPost"
@@ -15,11 +16,16 @@ export default function PostPage() {
   const [page, setPage] = useState(1) // Add page state
   const [limit] = useState(5) // Adjust this to your desired limit
   const [hasMoreData, setHasMoreData] = useState(true) // Track if there's more data
+  const [cookies, setCookies, removeCookie] = useCookies(["token"])
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/post/user-posts?page=${page}&limit=${limit}`)
+        const response = await axios.get(`/api/post/user-posts?page=${page}&limit=${limit}`, {
+          headers: {
+            Authorization: `Bearer ${cookies.token}`,
+          },
+        })
         console.log(response.data)
         if (response.data.data.length === 0) {
           setHasMoreData(false) // No more data to load
