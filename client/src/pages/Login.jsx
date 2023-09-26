@@ -36,8 +36,8 @@ export default function Login() {
     // Define your cookie options
     const cookieOptions = {
       path: "/", // Path for the cookie
-      secure: true, // Use HTTPS-only cookie
-      sameSite: "none", // Same-site attribute (strict, lax, none)
+      // secure: true, // Use HTTPS-only cookie
+      // sameSite: "none", // Same-site attribute (strict, lax, none)
     }
 
     try {
