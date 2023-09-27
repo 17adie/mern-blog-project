@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { SquaresPlusIcon, Bars3Icon } from "@heroicons/react/24/outline"
-import { useCookies } from "react-cookie"
+import { useCookie } from "../hooks/useCookie"
 import useAccountStore from "../zustand/account.store"
-import useCrypto from "../hooks/crypto.hooks"
+import useCrypto from "../hooks/useCrypto"
 
 export default function Navbar() {
   const navigate = useNavigate()
-  const [cookies, setCookies, removeCookie] = useCookies(["token"])
+  const { cookieValue, deleteCookie } = useCookie("token")
   const [toggleMenu, setToggleMenu] = useState(false)
   const [isLogged, setIsLogged] = useState(false)
   const { decrypt } = useCrypto()
@@ -34,7 +34,7 @@ export default function Navbar() {
        other than that all is working like the zustand (clear function)
        src: https://stackoverflow.com/questions/54861709/cookies-removeabc-not-working-in-reactjs | https://github.com/bendotcodes/cookies/issues/16
     */
-    removeCookie("token", { path: "/" })
+    deleteCookie({ path: "/" })
     // zustand
     zustandStoreAccount(undefined)
     // navigate login when logout
@@ -42,14 +42,14 @@ export default function Navbar() {
   }
 
   useEffect(() => {
-    //   if (cookies.token !== undefined) {
+    //   if (cookieValue !== undefined) {
     //     setIsLogged(true)
     //   } else {
     //     setIsLogged(false)
     //   }
     // simplified version of the above condition code
-    setIsLogged(cookies.token !== undefined)
-  }, [cookies.token])
+    setIsLogged(cookieValue !== null)
+  }, [cookieValue])
 
   return (
     <nav className="sticky top-0 bg-gray-200 text-primary z-10">

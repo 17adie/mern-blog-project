@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate, useLocation } from "react-router-dom"
-import { useCookies } from "react-cookie"
 import axios from "axios"
 import { format } from "date-fns"
 import Loader from "../../components/Loader"
@@ -9,13 +8,15 @@ import EditDeleteButtons from "../../components/EditDeleteButtons"
 import { toast } from "react-hot-toast"
 import { confirmAlert } from "react-confirm-alert" // Import
 import "react-confirm-alert/src/react-confirm-alert.css" // Import css
+import { useCookie } from '../../hooks/useCookie';
+
 
 export default function ViewPostPage() {
   const [loading, setLoading] = useState(true) // Set loading to true initially
   const [postInfo, setPostInfo] = useState([])
   const [pageNotFound, setPageNotFound] = useState(false)
   const [postOwner, setPostOwner] = useState(null)
-  const [cookies, setCookies, removeCookie] = useCookies(["token"])
+  const { cookieValue, setCookie, deleteCookie } = useCookie("token")
 
   // get the id from the url :id
   const { id } = useParams()
@@ -48,7 +49,7 @@ export default function ViewPostPage() {
 
         const response = await axios.get(`/api/post/${id}`, {
           headers: {
-            Authorization: `Bearer ${cookies.token}`,
+            Authorization: `Bearer ${cookieValue}`,
           },
         })
 

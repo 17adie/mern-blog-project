@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { useCookies } from "react-cookie"
+import { useCookie } from "../../hooks/useCookie"
 import axios from "axios"
 import PostCard from "../../components/PostCard"
 import NoPost from "../../components/NoPost"
@@ -16,14 +16,14 @@ export default function PostPage() {
   const [page, setPage] = useState(1) // Add page state
   const [limit] = useState(5) // Adjust this to your desired limit
   const [hasMoreData, setHasMoreData] = useState(true) // Track if there's more data
-  const [cookies, setCookies, removeCookie] = useCookies(["token"])
+  const { cookieValue } = useCookie("token")
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`/api/post/user-posts?page=${page}&limit=${limit}`, {
           headers: {
-            Authorization: `Bearer ${cookies.token}`,
+            Authorization: `Bearer ${cookieValue}`,
           },
         })
         console.log(response.data)
@@ -49,7 +49,11 @@ export default function PostPage() {
   const handleDeletePost = async (postID) => {
     const delePost = async () => {
       try {
-        const { data } = await axios.delete(`/api/post/${postID}`)
+        const { data } = await axios.delete(`/api/post/${postID}`, {
+          headers: {
+            Authorization: `Bearer ${cookieValue}`,
+          },
+        })
         console.log(data)
 
         if (data.status) {

@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
-import useCrypto from "../hooks/crypto.hooks"
+import useCrypto from "../hooks/useCrypto"
 
 const { encrypt } = useCrypto()
 

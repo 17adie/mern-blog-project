@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "react-hot-toast"
 import axios from "axios"
 import useAccountStore from "../zustand/account.store"
-import { useCookies } from "react-cookie"
+import { useCookie } from "../hooks/useCookie"
 
 export default function Login() {
   // Zustand
@@ -19,7 +19,7 @@ export default function Login() {
 
   const navigate = useNavigate()
 
-  const [cookies, setCookie, removeCookie] = useCookies(["token"])
+  const { setCookie } = useCookie("token")
 
   const handleInputChange = (event) => {
     const { name, value } = event.target
@@ -50,7 +50,7 @@ export default function Login() {
         zustandStoreAccount(data.user)
         toast.success(data.message)
         setFormData(initialFormData) // reset input fields
-        setCookie("token", data.token, cookieOptions)
+        setCookie(data.token, cookieOptions)
         navigate("/post")
       } else {
         toast.error(data.message)

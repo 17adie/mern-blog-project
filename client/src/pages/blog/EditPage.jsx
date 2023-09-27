@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast"
 import Loader from "../../components/Loader"
 import PostForm from "../../components/PostForm"
 import NoDataFound from "../../components/NoDataFound"
+import { useCookie } from "../../hooks/useCookie"
 
 export default function EditPage() {
   const [loading, setLoading] = useState(false) // save button
@@ -13,6 +14,7 @@ export default function EditPage() {
   const [pageNotFound, setPageNotFound] = useState(false)
   const formRef = useRef(null) // Create a ref for the form
   const navigate = useNavigate()
+  const { cookieValue } = useCookie("token")
 
   // need to set if you have no loader. So you can set the state to []
   // but for the sake of the forms we will set this
@@ -32,7 +34,11 @@ export default function EditPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`/api/post/${id}`)
+        const { data } = await axios.get(`/api/post/${id}`, {
+          headers: {
+            Authorization: `Bearer ${cookieValue}`,
+          },
+        })
         console.log(data)
         if (data.status) {
           const { title, summary, content } = data.data // get only the data that we will need
@@ -86,7 +92,11 @@ export default function EditPage() {
     formDataToSend.set("file", file) // Append the file to the FormData
     formDataToSend.set("content", content)
     try {
-      const { data } = await axios.put(`/api/post/posts/${id}`, formDataToSend)
+      const { data } = await axios.put(`/api/post/posts/${id}`, formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${cookieValue}`,
+        },
+      })
       console.log({ data })
       if (data.status) {
         toast.success(data.message)

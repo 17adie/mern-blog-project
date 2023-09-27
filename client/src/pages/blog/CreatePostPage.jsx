@@ -1,5 +1,6 @@
 import { useState, useRef } from "react"
 import { useNavigate, Link } from "react-router-dom"
+import { useCookie } from "../../hooks/useCookie"
 import { toast } from "react-hot-toast"
 import axios from "axios"
 import PostForm from "../../components/PostForm"
@@ -8,6 +9,7 @@ export default function CreatePostPage() {
   const formRef = useRef(null) // Create a ref for the form
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const { cookieValue } = useCookie("token")
   const initialFormData = {
     title: "",
     summary: "",
@@ -56,7 +58,11 @@ export default function CreatePostPage() {
     formDataToSend.set("content", content)
 
     try {
-      const { data } = await axios.post("/api/post/posts", formDataToSend)
+      const { data } = await axios.post("/api/post/posts", formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${cookieValue}`,
+        },
+      })
       console.log({ data })
       if (data.status) {
         toast.success(data.message)
