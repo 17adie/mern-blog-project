@@ -47,14 +47,14 @@ App.use("/uploads", express.static("uploads"))
 // App.use('/uploads', express.static(__dirname + '/uploads'));
 
 // Parse incoming request with json payload
-App.use(express.json())
+App.use(express.json({ limit: "100mb" }))
 
 // Parse and handle HTTP cookies that are sent by the client's browser as a part of the HTTP request.
 App.use(cookieParser())
 
 // Get the json payload with Content-Type header
 // Preventing to get undefined value in request
-App.use(express.urlencoded({ extended: true }))
+App.use(express.urlencoded({ limit: "100mb", extended: true }))
 
 // #Routes
 

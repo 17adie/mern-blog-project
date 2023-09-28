@@ -3,16 +3,16 @@ import { format } from "date-fns"
 import LongText from "./LongText"
 import EditDeleteButtons from "./EditDeleteButtons"
 
-export default function PostCard({ _id, title, cover_path, date_created, author, summary, handleDeletePost, postOwner }) {
-  const coverPath = import.meta.env.VITE_COVER_PATH + cover_path
+export default function PostCard({ _id, title, image, createdAt, author, summary, handleDeletePost, postOwner }) {
+  // const coverPath = import.meta.env.VITE_COVER_PATH + cover_path
 
-  const formattedDateCreated = format(new Date(date_created), "MMMM d, yyyy h:mm a")
+  const formattedDateCreated = format(new Date(createdAt), "MMMM d, yyyy h:mm a")
 
   return (
     <div className="lg:flex bg-white shadow-sm rounded-lg overflow-hidden my-10 justify-between">
       <div className="lg:w-1/3">
         <Link to={`/post/${_id}`} state={{ postOwner }}>
-          <img className="object-cover h-48 w-96 rounded p-3 hover:scale-110 ease-in duration-200" src={coverPath} alt="cover photo" />
+          <img className="object-cover h-48 w-96 rounded p-3 hover:scale-110 ease-in duration-200" src={image.url} alt="cover photo" />
         </Link>
       </div>
       <div className="flex flex-col p-4 lg:w-2/3 justify-between">

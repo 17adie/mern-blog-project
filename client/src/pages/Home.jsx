@@ -16,11 +16,10 @@ export default function Home() {
       try {
         const response = await axios.get(`/api/post/posts?page=${page}&limit=${limit}`)
         // console.log(response.data.data)
-        if (response.data.data.length === 0) {
+        if (response.data.data.length === 0 || response.data.data.length < limit) {
           setHasMoreData(false) // No more data to load
-        } else {
-          setUserPosts([...userPosts, ...response.data.data])
         }
+        setUserPosts([...userPosts, ...response.data.data])
       } catch (error) {
         console.log("Error:", error)
       } finally {

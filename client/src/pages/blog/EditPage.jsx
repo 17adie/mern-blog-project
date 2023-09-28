@@ -7,6 +7,7 @@ import Loader from "../../components/Loader"
 import PostForm from "../../components/PostForm"
 import NoDataFound from "../../components/NoDataFound"
 import { useCookie } from "../../hooks/useCookie"
+import convertFileToBase64 from "../../utils/convertFileToBase64"
 
 export default function EditPage() {
   const [loading, setLoading] = useState(false) // save button
@@ -86,17 +87,24 @@ export default function EditPage() {
     }
 
     // Create a FormData object. Use this approach to be able to save the file data
-    const formDataToSend = new FormData()
-    formDataToSend.set("title", title)
-    formDataToSend.set("summary", summary)
-    formDataToSend.set("file", file) // Append the file to the FormData
-    formDataToSend.set("content", content)
+    // const formDataToSend = new FormData()
+    // formDataToSend.set("title", title)
+    // formDataToSend.set("summary", summary)
+    // formDataToSend.set("file", file) // Append the file to the FormData
+    // formDataToSend.set("content", content)
     try {
-      const { data } = await axios.put(`/api/post/posts/${id}`, formDataToSend, {
-        headers: {
-          Authorization: `Bearer ${cookieValue}`,
-        },
-      })
+      // Convert the file to base64
+      const fileData = await convertFileToBase64(file)
+
+      const { data } = await axios.put(
+        `/api/post/posts/${id}`,
+        { title, summary, file: fileData, content },
+        {
+          headers: {
+            Authorization: `Bearer ${cookieValue}`,
+          },
+        }
+      )
       console.log({ data })
       if (data.status) {
         toast.success(data.message)

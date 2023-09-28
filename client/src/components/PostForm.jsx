@@ -14,18 +14,16 @@ export default function PostForm({ onSubmit, formRef, formData, handleInputChang
   // Validate the file
   const validateAndSetFile = (file) => {
     if (file) {
-      if (file) {
-        const allowedTypes = ["image/jpeg", "image/png", "image/gif"]
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif"]
 
-        if (!allowedTypes.includes(file.type)) {
-          toast.error("Only PNG, JPEG, and GIF files are allowed.")
-          setSelectedFile(null)
-        } else if (file.size > 10 * 1024 * 1024) {
-          toast.error("File size exceeds the limit of 10MB.")
-          setSelectedFile(null)
-        } else {
-          setSelectedFile(file)
-        }
+      if (!allowedTypes.includes(file.type)) {
+        toast.error("Only PNG, JPEG, and GIF files are allowed.")
+        setSelectedFile(null)
+      } else if (file.size > 10 * 1024 * 1024) {
+        toast.error("File size exceeds the limit of 10MB.")
+        setSelectedFile(null)
+      } else {
+        setSelectedFile(file)
       }
     }
   }

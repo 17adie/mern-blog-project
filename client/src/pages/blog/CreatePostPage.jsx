@@ -4,6 +4,7 @@ import { useCookie } from "../../hooks/useCookie"
 import { toast } from "react-hot-toast"
 import axios from "axios"
 import PostForm from "../../components/PostForm"
+import convertFileToBase64 from "../../utils/convertFileToBase64"
 
 export default function CreatePostPage() {
   const formRef = useRef(null) // Create a ref for the form
@@ -33,7 +34,6 @@ export default function CreatePostPage() {
     e.preventDefault()
     setLoading(true)
     const { title, summary, file, content } = formData
-
     /*
      # Check if the content only contains empty paragraphs.
      In this regular expression, \s* matches any number of whitespace characters 
@@ -50,19 +50,27 @@ export default function CreatePostPage() {
       return
     }
 
+    // replace with new FileReader()
     // Create a FormData object. Use this approach to be able to save the file data
-    const formDataToSend = new FormData()
-    formDataToSend.set("title", title)
-    formDataToSend.set("summary", summary)
-    formDataToSend.set("file", file) // Append the file to the FormData
-    formDataToSend.set("content", content)
+    // const formDataToSend = new FormData()
+    // formDataToSend.set("title", title)
+    // formDataToSend.set("summary", summary)
+    // formDataToSend.set("file", file) // Append the file to the FormData
+    // formDataToSend.set("content", content)
 
     try {
-      const { data } = await axios.post("/api/post/posts", formDataToSend, {
-        headers: {
-          Authorization: `Bearer ${cookieValue}`,
-        },
-      })
+      // Convert the file to base64
+      const fileData = await convertFileToBase64(file)
+
+      const { data } = await axios.post(
+        "/api/post/posts",
+        { title, summary, file: fileData, content },
+        {
+          headers: {
+            Authorization: `Bearer ${cookieValue}`,
+          },
+        }
+      )
       console.log({ data })
       if (data.status) {
         toast.success(data.message)

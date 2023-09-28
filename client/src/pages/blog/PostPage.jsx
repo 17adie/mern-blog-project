@@ -26,13 +26,12 @@ export default function PostPage() {
             Authorization: `Bearer ${cookieValue}`,
           },
         })
-        console.log(response.data)
-        if (response.data.data.length === 0) {
+        // console.log(response.data)
+        if (response.data.data.length === 0 || response.data.data.length < limit) {
           setHasMoreData(false) // No more data to load
-        } else {
-          setUserPosts([...userPosts, ...response.data.data])
-          setPostOwner(response.data.postOwner)
         }
+        setUserPosts([...userPosts, ...response.data.data])
+        setPostOwner(response.data.postOwner)
       } catch (error) {
         console.log("Error:", error)
       } finally {
@@ -54,7 +53,7 @@ export default function PostPage() {
             Authorization: `Bearer ${cookieValue}`,
           },
         })
-        console.log(data)
+        // console.log(data)
 
         if (data.status) {
           toast.success(data.message)
@@ -79,7 +78,7 @@ export default function PostPage() {
         {
           label: "No",
           onClick: () => {
-            console.log("No")
+            // console.log("No")
             return
           },
         },

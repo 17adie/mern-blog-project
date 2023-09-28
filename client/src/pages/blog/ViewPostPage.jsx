@@ -8,15 +8,14 @@ import EditDeleteButtons from "../../components/EditDeleteButtons"
 import { toast } from "react-hot-toast"
 import { confirmAlert } from "react-confirm-alert" // Import
 import "react-confirm-alert/src/react-confirm-alert.css" // Import css
-import { useCookie } from '../../hooks/useCookie';
-
+import { useCookie } from "../../hooks/useCookie"
 
 export default function ViewPostPage() {
   const [loading, setLoading] = useState(true) // Set loading to true initially
   const [postInfo, setPostInfo] = useState([])
   const [pageNotFound, setPageNotFound] = useState(false)
   const [postOwner, setPostOwner] = useState(null)
-  const { cookieValue, setCookie, deleteCookie } = useCookie("token")
+  const { cookieValue } = useCookie("token")
 
   // get the id from the url :id
   const { id } = useParams()
@@ -32,8 +31,8 @@ export default function ViewPostPage() {
 
   // }
 
-  const formattedDateCreated = (date_created) => {
-    return format(new Date(date_created), "MMMM d, yyyy h:mm a")
+  const formattedDateCreated = (createdAt) => {
+    return format(new Date(createdAt), "MMMM d, yyyy h:mm a")
   }
 
   const navigate = useNavigate()
@@ -70,7 +69,11 @@ export default function ViewPostPage() {
   const handleDeletePost = async (postID) => {
     const delePost = async () => {
       try {
-        const { data } = await axios.delete(`/api/post/${postID}`)
+        const { data } = await axios.delete(`/api/post/${postID}`, {
+          headers: {
+            Authorization: `Bearer ${cookieValue}`,
+          },
+        })
         console.log(data)
 
         if (data.status) {
@@ -116,10 +119,10 @@ export default function ViewPostPage() {
             <h1 className="text-xl font-bold md:text-3xl mt-5">{postInfo.title}</h1>
             <div className="my-5 flex flex-col items-baseline sm:flex-row md:gap-2">
               <strong>{postInfo.author.first_name + " " + postInfo.author.last_name}</strong>
-              <span className="text-gray-500 text-xs"> {formattedDateCreated(postInfo.date_created)}</span>
+              <span className="text-gray-500 text-xs"> {formattedDateCreated(postInfo.createdAt)}</span>
             </div>
             <div className="flex justify-center items-center mb-5">
-              <img className="h-auto rounded-lg  mx-auto md:max-w-md lg:max-w-lg" src={import.meta.env.VITE_COVER_PATH + postInfo.cover_path} alt="cover photo" />
+              <img className="h-auto rounded-lg  mx-auto md:max-w-md lg:max-w-lg" src={postInfo.image.url} alt="cover photo" />
             </div>
             <div>
               <div className="" dangerouslySetInnerHTML={{ __html: postInfo.content }} />

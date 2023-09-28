@@ -1,3 +1,5 @@
+// # This method is replaced with Cloudinary. Saved for future reference.
+
 /**
  * Multer is a node.js middleware for handling multipart/form-data , which is primarily used for uploading files.
  * It is written on top of busboy for maximum efficiency. NOTE: Multer will not process any form which is not

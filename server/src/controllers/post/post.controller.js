@@ -1,10 +1,11 @@
 import Post from "../../mongodb/models/Post.js"
+import cloudinary from "../../config/cloudinary.config.js"
 
 // Create a new post
 const createPost = async (req, res) => {
   try {
-    const { title, summary, content } = req.body
-    const { fileName } = req.locals
+    const { title, summary, content, file } = req.body
+    // const { fileName } = req.locals
     const userID = req.id // from authentication middleware
 
     const requiredFields = [title, summary, content]
@@ -15,18 +16,27 @@ const createPost = async (req, res) => {
       })
     }
 
-    if (!fileName) {
+    if (!file) {
       return res.json({
         status: false,
         message: "Cover photo is required.",
       })
     }
 
+    const result = await cloudinary.uploader.upload(file, {
+      folder: "post_cover",
+      // width: 300,
+      // crop: "scale"
+    })
+
     // create new blog
     const post = await Post.create({
       title,
       summary,
-      cover_path: fileName,
+      image: {
+        public_id: result.public_id,
+        url: result.secure_url,
+      },
       content,
       author: userID,
     })
@@ -57,7 +67,7 @@ const getUserPost = async (req, res) => {
     const skip = (page - 1) * limit
     const id = req.id
 
-    const userPost = await Post.find({ author: id }).populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }).skip(skip).limit(parseInt(limit)) // Exclude _id, include first_name and last_name
+    const userPost = await Post.find({ author: id }).populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit)) // Exclude _id, include first_name and last_name
 
     return res.json({
       status: true,
@@ -77,7 +87,7 @@ const getAllPosts = async (req, res) => {
     const skip = (page - 1) * limit
 
     // const userPost = await Post.find().populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }) // Exclude _id, include first_name and last_name
-    const userPost = await Post.find().populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ date_created: -1 }).skip(skip).limit(parseInt(limit))
+    const userPost = await Post.find().populate("author", { first_name: 1, last_name: 1, _id: 0 }).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit))
     return res.json({
       status: true,
       data: userPost,
@@ -123,10 +133,18 @@ const deletePost = async (req, res) => {
 // Update a post
 const updatePost = async (req, res) => {
   try {
-    const { title, summary, content } = req.body
+    const { title, summary, content, file } = req.body
     const { id } = req.params // post id
-    const { fileName } = req.locals // get saved filename from /upload
+    // const { fileName } = req.locals // get saved filename from /upload
     const userID = req.id // get user id for updating condition
+
+    const requiredFields = [title, summary, content]
+    if (requiredFields.some((field) => !field.trim())) {
+      return res.json({
+        status: false,
+        message: "Please fill out all required fields.",
+      })
+    }
 
     const postDoc = await Post.findById(id) // get the author id
 
@@ -136,8 +154,11 @@ const updatePost = async (req, res) => {
       return res.json({ status: false, message: "You're not authorize to modify this post." })
     }
 
+    // get the previous image id
+    const previousPublicId = postDoc.image.public_id
+
     // Get the current time
-    const currentTime = new Date()
+    // const currentTime = new Date()
 
     /**
      * Construct the update object using the $set operator
@@ -158,15 +179,31 @@ const updatePost = async (req, res) => {
       title: title,
       summary: summary,
       content: content,
-      date_updated: currentTime,
+      // date_updated: currentTime,
       // },
     }
-
     // Check if fileName is provided and not null
-    if (fileName !== undefined) {
-      // If fileName is provided, update the file field
-      // updateObject.$set.cover_path = fileName // using set
-      updateObject.cover_path = fileName
+    if (file !== null) {
+      // Upload the new image
+      await cloudinary.uploader.upload(file, { folder: "post_cover" }, (error, result) => {
+        if (error) {
+          return res.json({ status: false, message: "Error uploading image", error })
+        } else {
+          updateObject.image = {
+            public_id: result.public_id,
+            url: result.secure_url,
+          }
+
+          // If a previous image exists, delete it
+          if (previousPublicId) {
+            cloudinary.uploader.destroy(previousPublicId, (destroyError, destroyResult) => {
+              if (destroyError) {
+                return res.json({ status: false, message: "Error deleting previous image", error: destroyError })
+              }
+            })
+          }
+        }
+      })
     }
 
     // Use findByIdAndUpdate to update the document
