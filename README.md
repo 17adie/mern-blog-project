@@ -4,8 +4,11 @@
 My first VITE + MERN project: a blog with user accounts, where you can easily add, update, and delete posts.
 
 
-## Demo: Screenshot
+## Demo
 
+### Live: https://mern-blog-client-ljra.onrender.com/
+
+### Screenshot
 #### Login
 ![Login](demo/blog-login.png)
 
